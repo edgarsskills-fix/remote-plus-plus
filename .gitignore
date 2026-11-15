@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+dist/
+.pytest_cache/
+.ruff_cache/
+*.pkg.tar.*
+*.deb
+*.log
+host#*
+*credentials*
+*registration*

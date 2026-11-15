@@ -1,0 +1,23 @@
+name: Checks and release archives
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -v
+      - run: python -m compileall -q app.py core.py current_session.py install.py packaging
+      - run: sh -n install.sh
+      - run: python packaging/build.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: remote-plus-plus
+          path: dist/

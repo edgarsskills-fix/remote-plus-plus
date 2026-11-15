@@ -1,0 +1,16 @@
+[Unit]
+Description=Remote++ / Chrome Remote Desktop for the current GNOME session
+PartOf=graphical-session.target
+After=graphical-session.target
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 @LAUNCHER@
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+
+[Install]
+WantedBy=graphical-session.target

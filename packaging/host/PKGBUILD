@@ -1,0 +1,28 @@
+# Remote++ only downloads official Google binaries. No AUR scripts are fetched.
+pkgname=remote-plus-plus-host
+pkgver=157.0.8103.19
+pkgrel=1
+pkgdesc='Google Chrome Remote Desktop host component for Remote++'
+arch=('x86_64')
+url='https://remotedesktop.google.com'
+license=('BSD-3-Clause' 'custom')
+depends=('gtk3' 'nss' 'libxtst' 'libxdamage' 'libxrandr' 'mesa' 'libpipewire' 'pam' 'systemd-libs')
+provides=('chrome-remote-desktop')
+conflicts=('chrome-remote-desktop')
+options=('!debug' '!strip')
+source=("chrome-remote-desktop-${pkgver}.deb::https://dl.google.com/linux/chrome-remote-desktop/deb/pool/main/c/chrome-remote-desktop/chrome-remote-desktop_${pkgver}_amd64.deb"
+        'pamrule')
+sha256sums=('cb3883ec7fbef455a5a1f75303f9f84face53fe8c10464fb102218833ed3db61'
+            '3c7d42e5e1f06886b31328164044ee070d9626fd549a863e431ada013b2f8eed')
+
+prepare() {
+    mkdir -p extracted
+    bsdtar -xf data.tar.xz -C extracted
+}
+
+package() {
+    install -d "$pkgdir/opt/google" "$pkgdir/usr/share/licenses/$pkgname"
+    cp -a "$srcdir/extracted/opt/google/chrome-remote-desktop" "$pkgdir/opt/google/"
+    install -Dm644 "$srcdir/pamrule" "$pkgdir/etc/pam.d/chrome-remote-desktop"
+    install -m644 "$srcdir/extracted/usr/share/doc/chrome-remote-desktop/copyright" "$pkgdir/usr/share/licenses/$pkgname/copyright"
+}
