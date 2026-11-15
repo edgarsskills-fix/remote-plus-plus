@@ -26,6 +26,10 @@ def main():
     except (ImportError, ValueError):
         print('Установка GTK4 / libadwaita: подтвердите запрос прав администратора.', flush=True)
         subprocess.run(['pkexec', 'pacman', '-S', '--needed', '--noconfirm', 'python-gobject', 'gtk4', 'libadwaita'], check=True)
+    if not shutil.which('cc') or not shutil.which('pkg-config') or subprocess.run(
+            ['pkg-config', '--exists', 'gio-2.0'], check=False).returncode:
+        print('Установка средств сборки модуля захвата: подтвердите запрос прав администратора.', flush=True)
+        subprocess.run(['pkexec', 'pacman', '-S', '--needed', '--noconfirm', 'gcc', 'pkgconf', 'glib2'], check=True)
     home = Path.home()
     data = Path(os.environ.get('XDG_DATA_HOME', str(home / '.local/share')))
     binary = home / '.local/bin'
@@ -35,9 +39,10 @@ def main():
         with tempfile.TemporaryDirectory(prefix='.remote-plus-install-', dir=data) as tmp:
             stage = Path(tmp) / 'app'
             stage.mkdir()
-            for name in ('app.py', 'core.py', 'current_session.py', 'install.py', 'README.md', 'LICENSE', 'THIRD_PARTY.md'):
+            for name in ('app.py', 'core.py', 'current_session.py', 'capture_gate.py', 'install.py', 'README.md', 'LICENSE', 'THIRD_PARTY.md'):
                 shutil.copy2(HERE / name, stage / name)
             shutil.copytree(HERE / 'data', stage / 'data')
+            shutil.copytree(HERE / 'native', stage / 'native')
             shutil.copytree(HERE / 'packaging/host', stage / 'packaging/host')
             old = Path(tmp) / 'previous'
             if target.exists():
@@ -71,6 +76,7 @@ def main():
     for command in (['update-desktop-database', str(apps)], ['gtk-update-icon-cache', '-f', '-t', str(data / 'icons/hicolor')]):
         if shutil.which(command[0]):
             subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(['/usr/bin/python3', str(target / 'current_session.py'), '--apply-update'], check=True)
     print('Remote++ установлен. Откройте его в меню приложений.', flush=True)
     if not options.no_launch:
         subprocess.Popen(['/usr/bin/python3', str(target / 'app.py')], start_new_session=True,

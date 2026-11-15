@@ -221,7 +221,7 @@ class Window(Adw.ApplicationWindow):
         open_button.set_halign(Gtk.Align.START)
         connect.append(open_button)
         content.append(connect)
-        content.append(label('Компьютер должен быть включён, а твой сеанс GNOME — запущен. Пока доступ включён, GNOME показывает значок захвата экрана — даже без подключённого клиента.', 'tiny muted', True))
+        content.append(label('Компьютер должен быть включён, а твой сеанс GNOME — запущен. Захват экрана начинается после авторизации клиента и завершается после отключения последнего клиента.', 'tiny muted', True))
 
     def build_setup(self):
         content = self.page('setup', 'Настройка за пару минут', 'Авторизация остаётся у Google. Remote++ подготовит всё остальное.')

@@ -18,7 +18,7 @@ import tempfile
 import time
 from typing import Callable
 
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 APP_ID = 'io.github.edgarsskills.RemotePlusPlus'
 UNIT = 'crd-current-session.service'
 GOOGLE_SETUP = 'https://remotedesktop.google.com/headless'
@@ -309,6 +309,8 @@ class Backend:
         if not registered(read_config(self.config)):
             raise RemoteError('Сначала привяжите компьютер к аккаунту Google.')
         self._check_legacy()
+        from capture_gate import prepare
+        prepare(self.base, HOST)
         self.install_integration()
         if autostart is not None:
             self.set_autostart(autostart)
