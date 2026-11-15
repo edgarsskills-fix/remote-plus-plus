@@ -1,4 +1,7 @@
-# Validation for 0.2.0
+# Validation for 0.2.1
+
+0.2.1 updates interface text and documentation. Capture/authentication behavior
+is unchanged from 0.2.0.
 
 Environment: CachyOS x86_64, GNOME 51 / Wayland, GTK 4.24,
 libadwaita 1.10, Python 3.14, Google host 157.0.8103.19.

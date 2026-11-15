@@ -18,7 +18,7 @@ import tempfile
 import time
 from typing import Callable
 
-VERSION = '0.2.0'
+VERSION = '0.2.1'
 APP_ID = 'io.github.edgarsskills.RemotePlusPlus'
 UNIT = 'crd-current-session.service'
 GOOGLE_SETUP = 'https://remotedesktop.google.com/headless'

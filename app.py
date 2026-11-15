@@ -98,13 +98,13 @@ class Window(Adw.ApplicationWindow):
         brand = box(spacing=0)
         brand.set_margin_start(24)
         brand.set_margin_top(16)
-        brand.set_margin_bottom(6)
+        brand.set_margin_bottom(38)
         brand.append(label('Remote', 'brand'))
         brand.append(label('++', 'brand-plus'))
         content.append(brand)
-        subtitle = label('ТВОЙ ПК. ОТОВСЮДУ.', 'eyebrow')
+        subtitle = label('УПРАВЛЕНИЕ', 'eyebrow')
         subtitle.set_margin_start(25)
-        subtitle.set_margin_bottom(34)
+        subtitle.set_margin_bottom(10)
         content.append(subtitle)
         self.nav = Gtk.ListBox(selection_mode=Gtk.SelectionMode.SINGLE)
         self.nav.add_css_class('nav-list')
@@ -174,7 +174,7 @@ class Window(Adw.ApplicationWindow):
         return content
 
     def build_overview(self):
-        content = self.page('overview', 'Твой компьютер рядом', 'Тот же рабочий стол — с телефона, ноутбука или другого ПК.')
+        content = self.page('overview', 'Удалённый доступ', 'Chrome Remote Desktop · GNOME / Wayland')
         hero = card(20)
         top = box(spacing=18)
         image = Gtk.Image.new_from_file(str(BASE / 'data' / (APP_ID + '.svg')))
@@ -183,11 +183,11 @@ class Window(Adw.ApplicationWindow):
         headings = box(True, 7)
         headings.set_hexpand(True)
         headings.set_valign(Gtk.Align.CENTER)
-        self.status_pill = label('ПРОВЕРЯЕМ ПОДКЛЮЧЕНИЕ', 'status-pill')
+        self.status_pill = label('ПРОВЕРКА СОСТОЯНИЯ', 'status-pill')
         headings.append(self.status_pill)
-        self.hero_title = label('Подготовим удалённый доступ', 'hero-title', True)
+        self.hero_title = label('Проверка состояния…', 'hero-title', True)
         headings.append(self.hero_title)
-        self.hero_subtitle = label('Один раз привяжи Google-аккаунт и задай свой PIN.', 'muted', True)
+        self.hero_subtitle = label('Получение состояния службы.', 'muted', True)
         headings.append(self.hero_subtitle)
         top.append(headings)
         hero.append(top)
@@ -200,13 +200,13 @@ class Window(Adw.ApplicationWindow):
         self.device_row.add_prefix(Gtk.Image.new_from_icon_name('computer-symbolic'))
         self.device_row.add_css_class('property-row')
         details.add(self.device_row)
-        self.account_row = Adw.ActionRow(title='Аккаунт Google', subtitle='Ещё не привязан')
+        self.account_row = Adw.ActionRow(title='Аккаунт Google', subtitle='Не привязан')
         self.account_row.add_prefix(Gtk.Image.new_from_icon_name('avatar-default-symbolic'))
         details.add(self.account_row)
         content.append(details)
         metrics = Gtk.FlowBox(selection_mode=Gtk.SelectionMode.NONE, homogeneous=True, min_children_per_line=1, max_children_per_line=3, column_spacing=12, row_spacing=12)
         self.metrics = {}
-        for key, title, icon in [('screen', 'Рабочий стол', 'video-display-symbolic'), ('memory', 'Память службы', 'org.gnome.Settings-device-security-symbolic'), ('autostart', 'При входе в систему', 'system-run-symbolic')]:
+        for key, title, icon in [('screen', 'Рабочий стол', 'video-display-symbolic'), ('memory', 'Память службы', 'org.gnome.Settings-device-security-symbolic'), ('autostart', 'Автозапуск', 'system-run-symbolic')]:
             tile = box(True, 7, 'metric')
             tile.append(label(title, 'tiny muted'))
             value = label('—', 'metric-value', True)
@@ -216,17 +216,17 @@ class Window(Adw.ApplicationWindow):
         content.append(metrics)
         connect = card(12)
         connect.append(label('Как подключиться', 'section-title'))
-        connect.append(label('Открой Chrome Remote Desktop под тем же Google-аккаунтом, выбери этот компьютер и введи PIN.', 'muted', True))
-        open_button = button('Открыть мои компьютеры', 'web-browser-symbolic', lambda _: self.open_url(GOOGLE_ACCESS))
+        connect.append(label('Откройте Chrome Remote Desktop под тем же аккаунтом Google, выберите компьютер и введите PIN.', 'muted', True))
+        open_button = button('Открыть Chrome Remote Desktop', 'web-browser-symbolic', lambda _: self.open_url(GOOGLE_ACCESS))
         open_button.set_halign(Gtk.Align.START)
         connect.append(open_button)
         content.append(connect)
-        content.append(label('Компьютер должен быть включён, а твой сеанс GNOME — запущен. Захват экрана начинается после авторизации клиента и завершается после отключения последнего клиента.', 'tiny muted', True))
+        content.append(label('Доступ работает в запущенном сеансе GNOME. Захват экрана включается при подключении клиента.', 'tiny muted', True))
 
     def build_setup(self):
-        content = self.page('setup', 'Настройка за пару минут', 'Авторизация остаётся у Google. Remote++ подготовит всё остальное.')
+        content = self.page('setup', 'Настройка', 'Установка компонента Google и регистрация компьютера.')
         group = Adw.PreferencesGroup(title='1. Компонент Google')
-        self.host_row = Adw.ActionRow(title='Chrome Remote Desktop', subtitle='Проверяем установку…')
+        self.host_row = Adw.ActionRow(title='Chrome Remote Desktop', subtitle='Проверка установки…')
         self.host_row.add_prefix(Gtk.Image.new_from_icon_name('package-x-generic-symbolic'))
         self.install_button = button('Установить', callback=lambda _: self.install_host(), css='suggested-action')
         self.install_button.set_valign(Gtk.Align.CENTER)
@@ -241,8 +241,8 @@ class Window(Adw.ApplicationWindow):
         content.append(self.already)
         self.setup_form = box(True, 22)
         google = card()
-        google.append(label('2. Разреши доступ в Google', 'section-title'))
-        google.append(label('На странице Google выбери «Начать», затем «Авторизовать». Скопируй команду для Debian Linux и вставь ниже.', 'muted', True))
+        google.append(label('2. Авторизация Google', 'section-title'))
+        google.append(label('На странице Google выберите «Начать», затем «Авторизовать». Скопируйте команду для Debian Linux и вставьте ниже.', 'muted', True))
         open_button = button('Открыть авторизацию Google', 'web-browser-symbolic', lambda _: self.open_url(GOOGLE_SETUP))
         open_button.set_halign(Gtk.Align.START)
         google.append(open_button)
@@ -250,14 +250,14 @@ class Window(Adw.ApplicationWindow):
         self.command = Adw.PasswordEntryRow(title='Команда Debian Linux от Google')
         group.add(self.command)
         google.append(group)
-        google.append(label('Вставленная команда не выполняется как скрипт. Используется только одноразовый код привязки.', 'tiny muted', True))
+        google.append(label('Код авторизации действует ограниченное время.', 'tiny muted', True))
         self.setup_form.append(google)
-        identity = Adw.PreferencesGroup(title='3. Имя компьютера и PIN', description='Имя латиницей. PIN — от 6 до 20 цифр; его будут спрашивать при подключении.')
+        identity = Adw.PreferencesGroup(title='3. Имя компьютера и PIN', description='Имя латиницей. PIN для подключения: от 6 до 20 цифр.')
         self.device_name = Adw.EntryRow(title='Имя компьютера')
         self.device_name.set_text('CachyOS PC')
         identity.add(self.device_name)
         self.setup_pin = Adw.PasswordEntryRow(title='PIN для подключения')
-        self.setup_confirm = Adw.PasswordEntryRow(title='Повтори PIN')
+        self.setup_confirm = Adw.PasswordEntryRow(title='Повторите PIN')
         for entry in (self.setup_pin, self.setup_confirm):
             entry.set_input_purpose(Gtk.InputPurpose.DIGITS)
             identity.add(entry)
@@ -268,7 +268,7 @@ class Window(Adw.ApplicationWindow):
         content.append(self.setup_form)
 
     def build_security(self):
-        content = self.page('security', 'Доступ под твоим контролем', 'Меняй PIN и решай, когда компьютер доступен удалённо.')
+        content = self.page('security', 'Безопасность', 'PIN, автозапуск и отключение доступа.')
         group = Adw.PreferencesGroup(title='Подключение')
         self.autostart = Adw.SwitchRow(title='Автозапуск при входе', subtitle='Включать удалённый доступ после входа в GNOME')
         self.autostart.connect('notify::active', self.toggle_autostart)
@@ -276,7 +276,7 @@ class Window(Adw.ApplicationWindow):
         content.append(group)
         pin = Adw.PreferencesGroup(title='Новый PIN', description='Смена PIN перезапустит службу и прервёт текущее удалённое подключение.')
         self.new_pin = Adw.PasswordEntryRow(title='Новый PIN')
-        self.new_confirm = Adw.PasswordEntryRow(title='Повтори новый PIN')
+        self.new_confirm = Adw.PasswordEntryRow(title='Повторите новый PIN')
         for row in (self.new_pin, self.new_confirm):
             row.set_input_purpose(Gtk.InputPurpose.DIGITS)
             pin.add(row)
@@ -286,14 +286,14 @@ class Window(Adw.ApplicationWindow):
         content.append(self.pin_button)
         control = card()
         control.append(label('Отключить доступ', 'section-title'))
-        control.append(label('Остановить службу и убрать её из автозапуска. Регистрация Google останется — включить доступ снова можно одной кнопкой.', 'muted', True))
+        control.append(label('Служба будет остановлена, автозапуск выключен. Регистрация Google сохранится.', 'muted', True))
         stop = button('Выключить удалённый доступ', callback=lambda _: self.stop_access(), css='destructive-action')
         stop.set_halign(Gtk.Align.START)
         control.append(stop)
         content.append(control)
 
     def build_diagnostics(self):
-        content = self.page('diagnostics', 'Проверим подключение', 'Состояние системы и журнал, который можно отправить для поддержки.')
+        content = self.page('diagnostics', 'Диагностика', 'Состояние службы и журнал событий.')
         group = Adw.PreferencesGroup()
         self.compat_row = Adw.ActionRow(title='Графический сеанс', subtitle='—')
         self.server_row = Adw.ActionRow(title='Компонент Google', subtitle='—')
@@ -307,12 +307,12 @@ class Window(Adw.ApplicationWindow):
         content.append(actions)
         self.log = Gtk.TextView(editable=False, cursor_visible=False, monospace=True, wrap_mode=Gtk.WrapMode.WORD_CHAR)
         self.log.add_css_class('log-view')
-        self.log.get_buffer().set_text('Нажми «Обновить журнал», чтобы получить диагностику.')
+        self.log.get_buffer().set_text('Нажмите «Обновить журнал» для загрузки событий.')
         scroll = Gtk.ScrolledWindow(min_content_height=250, hscrollbar_policy=Gtk.PolicyType.NEVER)
         scroll.add_css_class('log-panel')
         scroll.set_child(self.log)
         content.append(scroll)
-        content.append(label('Коды Google и аккаунт скрываются в диагностике. PIN в открытом виде не сохраняется.', 'tiny muted', True))
+        content.append(label('В журнале скрываются адрес аккаунта и коды авторизации.', 'tiny muted', True))
 
     def select_page(self, key):
         self.stack.set_visible_child_name(key)
@@ -329,11 +329,11 @@ class Window(Adw.ApplicationWindow):
         try:
             launcher.launch_finish(result)
         except GLib.Error:
-            self.error('Не удалось открыть браузер', 'Открой адрес вручную: ' + launcher.get_uri())
+            self.error('Не удалось открыть браузер', 'Откройте адрес вручную: ' + launcher.get_uri())
 
     def error(self, title, body):
         dialog = Adw.AlertDialog(heading=title, body=body)
-        dialog.add_response('ok', 'Понятно')
+        dialog.add_response('ok', 'Закрыть')
         dialog.set_default_response('ok')
         dialog.present(self)
 
@@ -362,7 +362,7 @@ class Window(Adw.ApplicationWindow):
             self.work.set_visible(False)
             self.stack.set_sensitive(True)
             if error:
-                self.error('Не удалось завершить', error)
+                self.error('Операция не выполнена', error)
             else:
                 if success:
                     self.toast(success)
@@ -408,19 +408,19 @@ class Window(Adw.ApplicationWindow):
         self.state = s
         self.updating = True
         self.banner.set_revealed(not s.compatible or bool(s.problem) or s.legacy_active)
-        self.banner.set_title(s.reason if not s.compatible else 'Обнаружена служба отдельного рабочего стола. Откройте диагностику.' if s.legacy_active else 'Связь с Google пока не установлена. Проверьте интернет и диагностику.' if s.problem else '')
+        self.banner.set_title(s.reason if not s.compatible else 'Обнаружена служба отдельного рабочего стола. Откройте диагностику.' if s.legacy_active else 'Соединение с Google не установлено. Проверьте подключение к интернету и журнал.' if s.problem else '')
         for css in ('online', 'offline'):
             self.status_pill.remove_css_class(css)
         if s.online:
-            pill, title, subtitle, action = 'ДОСТУПЕН В СЕТИ', 'Можно подключаться', 'Google видит этот компьютер. Твой рабочий стол готов к подключению.', 'Выключить доступ'
+            pill, title, subtitle, action = 'В СЕТИ', 'Доступ включён', 'Соединение с Google установлено.', 'Выключить доступ'
             self.status_pill.add_css_class('online')
         elif s.active:
-            pill, title, subtitle, action = 'ПОДКЛЮЧАЕМСЯ К GOOGLE', 'Устанавливаем соединение', 'Это обычно занимает несколько секунд. Если статус не меняется — открой диагностику.', 'Выключить доступ'
+            pill, title, subtitle, action = 'ПОДКЛЮЧЕНИЕ', 'Соединение с Google…', 'Если соединение не устанавливается, проверьте журнал в разделе «Диагностика».', 'Выключить доступ'
         elif s.registered:
-            pill, title, subtitle, action = 'ДОСТУП ВЫКЛЮЧЕН', 'Сейчас компьютер недоступен', 'Регистрация сохранена. Включи доступ, когда он понадобится.', 'Включить доступ'
+            pill, title, subtitle, action = 'ОТКЛЮЧЁН', 'Доступ выключен', 'Регистрация Google сохранена.', 'Включить доступ'
             self.status_pill.add_css_class('offline')
         else:
-            pill, title, subtitle, action = 'ЕЩЁ НЕ НАСТРОЕН', 'Начнём с твоего компьютера', 'Привяжи аккаунт Google и задай PIN. Всё остальное Remote++ подготовит сам.', 'Настроить доступ'
+            pill, title, subtitle, action = 'ТРЕБУЕТСЯ НАСТРОЙКА', 'Доступ не настроен', 'Для подключения необходимы аккаунт Google и PIN.', 'Настроить доступ'
         self.status_pill.set_text(pill)
         self.hero_title.set_text(title)
         self.hero_subtitle.set_text(subtitle)
@@ -428,11 +428,11 @@ class Window(Adw.ApplicationWindow):
         self.primary.set_sensitive(s.compatible)
         self.side_status.set_text('●  ' + ('Доступен в сети' if s.online else 'Подключение…' if s.active else 'Доступ выключен'))
         self.device_row.set_subtitle(s.name or '—')
-        self.account_row.set_subtitle(s.account or 'Ещё не привязан')
+        self.account_row.set_subtitle(s.account or 'Не привязан')
         self.metrics['screen'].set_text('Текущий')
         self.metrics['memory'].set_text(s.memory)
         self.metrics['autostart'].set_text('Включён' if s.enabled else 'Выключен')
-        self.host_row.set_subtitle(('Установлен · ' + s.host_version) if s.host_installed else 'Нужен для первого подключения')
+        self.host_row.set_subtitle(('Установлен · ' + s.host_version) if s.host_installed else 'Не установлен')
         self.install_button.set_visible(not s.host_installed)
         self.install_button.set_sensitive(s.compatible)
         self.setup_form.set_visible(not s.registered)
@@ -453,7 +453,7 @@ class Window(Adw.ApplicationWindow):
         elif self.state.active:
             self.stop_access()
         else:
-            self.task('Включаем удалённый доступ…', lambda: self.backend.start(True), 'Доступ включён')
+            self.task('Включение удалённого доступа…', lambda: self.backend.start(True), 'Доступ включён')
 
     def install_host(self):
         self.task('Подготовка установки…', lambda: self.backend.install_host(self.report), 'Компонент Google установлен')
@@ -465,36 +465,36 @@ class Window(Adw.ApplicationWindow):
             validate_pin(pin, confirmation)
             parse_google_command(command)
         except RemoteError as exc:
-            self.error('Проверь данные', str(exc))
+            self.error('Некорректные данные', str(exc))
             return
         def done(_):
             for entry in (self.command, self.setup_pin, self.setup_confirm):
                 entry.set_text('')
             self.select_page('overview')
-        self.task('Привязываем компьютер к Google…', lambda: self.backend.connect_google(command, name, pin, confirmation), 'Компьютер привязан', done)
+        self.task('Регистрация компьютера в Google…', lambda: self.backend.connect_google(command, name, pin, confirmation), 'Компьютер привязан', done)
 
     def change_pin(self):
         pin, confirmation = self.new_pin.get_text(), self.new_confirm.get_text()
         try:
             validate_pin(pin, confirmation)
         except RemoteError as exc:
-            self.error('Проверь PIN', str(exc))
+            self.error('Некорректный PIN', str(exc))
             return
         def done(_):
             self.new_pin.set_text('')
             self.new_confirm.set_text('')
-        self.task('Сохраняем новый PIN…', lambda: self.backend.change_pin(pin, confirmation), 'Новый PIN сохранён', done)
+        self.task('Сохранение PIN…', lambda: self.backend.change_pin(pin, confirmation), 'Новый PIN сохранён', done)
 
     def toggle_autostart(self, row, _):
         if not self.updating:
             value = row.get_active()
-            self.task('Меняем автозапуск…', lambda: self.backend.set_autostart(value), 'Автозапуск включён' if value else 'Автозапуск выключен')
+            self.task('Изменение автозапуска…', lambda: self.backend.set_autostart(value), 'Автозапуск включён' if value else 'Автозапуск выключен')
 
     def stop_access(self):
         def stop():
             self.backend.stop()
             self.backend.set_autostart(False)
-        self.task('Выключаем удалённый доступ…', stop, 'Удалённый доступ выключен')
+        self.task('Отключение удалённого доступа…', stop, 'Удалённый доступ выключен')
 
     def confirm_disconnect(self):
         dialog = Adw.AlertDialog(heading='Отвязать этот компьютер?', body='Удалённый доступ будет выключен. После новой привязки этот компьютер появится в другом аккаунте. Старую запись можно удалить на странице Google.')
@@ -503,14 +503,14 @@ class Window(Adw.ApplicationWindow):
         dialog.set_response_appearance('disconnect', Adw.ResponseAppearance.DESTRUCTIVE)
         dialog.set_default_response('cancel')
         dialog.set_close_response('cancel')
-        dialog.connect('response', lambda _, response: self.task('Отключаем регистрацию…', self.backend.disconnect, 'Компьютер отвязан') if response == 'disconnect' else None)
+        dialog.connect('response', lambda _, response: self.task('Удаление привязки…', self.backend.disconnect, 'Компьютер отвязан') if response == 'disconnect' else None)
         dialog.present(self)
 
     def load_diagnostics(self):
         if self.preview:
-            self.log.get_buffer().set_text('Remote++ 0.1.0\nСовместимость: CachyOS / Arch · GNOME · Wayland\nКомпонент Google: 157.0.8103.19\n\nGNOME session initialized.\nSignaling connected.\nHost ready to receive connections.')
+            self.log.get_buffer().set_text(f'Remote++ {VERSION}\nСовместимость: CachyOS / Arch · GNOME · Wayland\nКомпонент Google: 157.0.8103.19\n\nRemote++: waiting for an authenticated client; capture is not started.\nSignaling connected.\nHost ready to receive connections.')
             return
-        self.task('Получаем диагностику…', self.backend.diagnostics, '', lambda text: self.log.get_buffer().set_text(text))
+        self.task('Загрузка журнала…', self.backend.diagnostics, '', lambda text: self.log.get_buffer().set_text(text))
 
     def copy_diagnostics(self):
         buffer = self.log.get_buffer()
@@ -524,15 +524,15 @@ class Window(Adw.ApplicationWindow):
 
     def on_close(self, _):
         if self.busy:
-            self.toast('Дождись завершения текущей операции')
+            self.toast('Дождитесь завершения операции')
             return True
         return False
 
     def about(self):
         dialog = Adw.AboutDialog(application_name='Remote++', application_icon=APP_ID,
             developer_name='edgarsskills-fix', version=VERSION, license_type=Gtk.License.MIT_X11,
-            comments='Удобная настройка Chrome Remote Desktop для текущего рабочего стола GNOME на CachyOS.',
-            website='https://github.com/edgarsskills-fix')
+            comments='Настройка Chrome Remote Desktop для GNOME на Wayland.',
+            website='https://github.com/edgarsskills-fix/remote-plus-plus')
         dialog.set_copyright('© 2026 edgarsskills-fix')
         dialog.present(self)
 
